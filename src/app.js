@@ -3,6 +3,7 @@ const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
 const express = require('express');
+const cookieParser = require('cookie-parser');
 const rateLimit = require('express-rate-limit');
 
 const config = require('./config/config');
@@ -27,6 +28,7 @@ if (config.NODE_ENV === env_mode.PRODUCTION) {
 
 app.use(helmet()); // set security http headers
 app.use(express.json()); // parse json request body
+app.use(cookieParser()); // Cookie parser
 app.use(express.urlencoded({ extended: true })); // parse urlencoded request body
 app.use(hpp()); // prevent http parameter pollution
 app.use(cors()); // enable cors

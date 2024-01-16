@@ -6,7 +6,7 @@ const { knex } = require('../config/db');
 const { createUserSchema, updateUserSchema } = require("../validation/user.validation");
 
 // @desc      Get List of all users
-// @route     GET /api/v1/users
+// @route     GET /api/users
 // @access    Private
 exports.getUsers = asyncHandler(async (req, res, next) => {
 
@@ -21,7 +21,7 @@ exports.getUsers = asyncHandler(async (req, res, next) => {
 });
 
 // @desc      Get single user
-// @route     GET /api/v1/users/:id
+// @route     GET /api/users/:id
 // @access    Private
 exports.getUser = asyncHandler(async (req, res, next) => {
 
@@ -38,7 +38,7 @@ exports.getUser = asyncHandler(async (req, res, next) => {
 });
 
 // @desc      Create User
-// @route     POST /api/v1/users
+// @route     POST /api/users
 // @access    Private
 exports.addUser = asyncHandler(async (req, res, next) => {
 
@@ -66,7 +66,7 @@ exports.addUser = asyncHandler(async (req, res, next) => {
 });
 
 // @desc      Update User
-// @route     PUT /api/v1/users/:id
+// @route     PUT /api/users/:id
 // @access    Private
 exports.updateUser = asyncHandler(async (req, res, next) => {
 
@@ -111,7 +111,7 @@ exports.updateUser = asyncHandler(async (req, res, next) => {
 });
 
 // @desc      Delete User
-// @route     DELETE /api/v1/users/:id
+// @route     DELETE /api/users/:id
 // @access    Private
 exports.deleteUser = asyncHandler(async (req, res, next) => {
 
