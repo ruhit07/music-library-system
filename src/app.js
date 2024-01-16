@@ -1,15 +1,20 @@
 const hpp = require('hpp');
 const cors = require('cors');
 const helmet = require('helmet');
+const morgan = require('morgan');
 const express = require('express');
 const rateLimit = require('express-rate-limit');
 
 const config = require('./config/config');
 const mountRoute = require('./routes/routes');
-const errorHandler = require('./middlewares/error.middleware');
 const { env_mode } = require('./enums/common.enum');
+const errorHandler = require('./middlewares/error.middleware');
 
 const app = express();
+
+if (config.NODE_ENV === env_mode.DEVELOPMENT) {
+  app.use(morgan('dev'));
+}
 
 const limiter = rateLimit({
   windowMs: 10 * 60 * 1000, // 10 minutes 100 request 

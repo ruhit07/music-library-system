@@ -15,10 +15,9 @@
 
 CREATE TABLE users(
   id                      SERIAL NOT NULL,
-  name                    VARCHAR(255),
-  email                   VARCHAR(255),
-  username                VARCHAR(255),
-  password                VARCHAR(255),
+  name                    VARCHAR(255) NOT NULL,
+  username                VARCHAR(255) NOT NULL,
+  password                VARCHAR(255) NOT NULL,
 
   created_at              TIMESTAMP WITH TIME ZONE,
   updated_at              TIMESTAMP WITH TIME ZONE,
@@ -34,8 +33,8 @@ CREATE TABLE users(
 CREATE TABLE albums(
   id                      SERIAL NOT NULL,
   title                   VARCHAR(255) NOT NULL,
-  release_year            DATE,
-  genre                   VARCHAR(255),
+  release_year            DATE NOT NULL,
+  genre                   VARCHAR(255) NOT NULL,
 
   created_at              TIMESTAMP WITH TIME ZONE,
   updated_at              TIMESTAMP WITH TIME ZONE,
@@ -82,8 +81,8 @@ CREATE TABLE albums_artists(
 CREATE TABLE songs(
   id                      SERIAL NOT NULL,
   title                   VARCHAR(255) NOT NULL,
-  duration                TIME,
-  album_id                INTEGER,
+  duration                TIME NOT NULL,
+  album_id                INTEGER NOT NULL,
   
   created_at              TIMESTAMP WITH TIME ZONE,
   updated_at              TIMESTAMP WITH TIME ZONE,
