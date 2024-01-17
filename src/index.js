@@ -1,7 +1,7 @@
 const app = require('./app');
 require('colors');
-const { connectPostgreSQL } = require('./config/db');
 const config = require('./config/config');
+const { connectPostgreSQL } = require('./config/db');
 
 // Connect to database
 connectPostgreSQL();

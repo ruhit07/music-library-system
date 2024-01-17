@@ -4,22 +4,22 @@ const router = express.Router();
 const { protect } = require("../middlewares/auth.middleware");
 
 const {
-  getUsers,
-  getUser,
-  addUser,
-  updateUser,
-  deleteUser
-} = require("../controllers/user.controller");
+  getArtists,
+  getArtist,
+  addArtist,
+  updateArtist,
+  deleteArtist
+} = require("../controllers/artist.controller");
 
 router.use(protect);
 
 router.route("/")
-  .get(getUsers)
-  .post(addUser);
+  .get(getArtists)
+  .post(addArtist);
 
 router.route("/:id")
-  .get(getUser)
-  .put(updateUser)
-  .delete(deleteUser);
+  .get(getArtist)
+  .put(updateArtist)
+  .delete(deleteArtist);
 
 module.exports = router;
