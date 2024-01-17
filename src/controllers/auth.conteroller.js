@@ -31,6 +31,7 @@ exports.register = asyncHandler(async (req, res, next) => {
     [name, username, hashPassword, created_at]
   );
 
+  delete user.password
   // Create token and back response
   sendTokenResponse(user, 201, 'Registration successfull', res);
 });
@@ -56,6 +57,7 @@ exports.login = asyncHandler(async (req, res, next) => {
   }
 
   // Create token and back response
+  delete user.password
   sendTokenResponse(user, 200, 'Login successfull', res);
 });
 

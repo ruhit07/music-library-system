@@ -10,7 +10,7 @@ const { createUserSchema, updateUserSchema } = require("../validation/user.valid
 // @access    Private
 exports.getUsers = asyncHandler(async (req, res, next) => {
 
-  const { rows: users } = await knex.raw('select * from users');
+  const { rows: users } = await knex.raw('select id, name, username, created_at from users');
 
   return res.status(200).json({
     success: true,
@@ -45,7 +45,13 @@ exports.addUser = asyncHandler(async (req, res, next) => {
   const reqBody = await createUserSchema(req.body);
   const { name, username, password, created_at } = reqBody;
 
-  const { rows: [existUser] } = await knex.raw('select * from users where username = ?', [username]);
+  const { rows: [existUser] } = await knex.raw(
+    `
+      select id, name, username, created_at 
+      from users 
+      where username = ?
+    `,  [username]);
+    
   if (existUser) {
     return next(new ErrorResponse(`Username already exists`, 400));
   };
@@ -57,6 +63,8 @@ exports.addUser = asyncHandler(async (req, res, next) => {
     `insert into users (name, username, password, created_at) values (?, ?, ?, ?) returning *`,
     [name, username, hashPassword, created_at]
   );
+
+  delete user.password
 
   res.status(201).json({
     success: true,
@@ -102,6 +110,8 @@ exports.updateUser = asyncHandler(async (req, res, next) => {
     { ...updateValue, id: req.params.id }
   );
 
+  delete newUser.password
+  
   res.status(200).json({
     success: true,
     message: `User with the id ${req.params.id} updated successfully`,

@@ -9,26 +9,7 @@ const { createArtistSchema, updateArtistSchema } = require("../validation/artist
 // @access    Private
 exports.getArtists = asyncHandler(async (req, res, next) => {
 
-  const { rows: artists } = await knex.raw(
-    `
-      select 
-        ar.id,
-        ar.name,
-        ar.created_at,
-        coalesce(jsonb_agg(
-          jsonb_build_object(
-            'id', a.id, 
-            'title', a.title, 
-            'release_year', a.release_year, 
-            'genre', a.genre 
-          )
-        ) filter(where a.id is not null), '[]') as albums
-      from artists ar
-      left join albums_artists aa on ar.id = aa.artist_id
-      left join albums a on aa.album_id = a.id
-      group by ar.id, ar.name, ar.created_at;
-    `
-  );
+  const { rows: artists } = await knex.raw(`select * from artists`);
 
   return res.status(200).json({
     success: true,
@@ -43,28 +24,7 @@ exports.getArtists = asyncHandler(async (req, res, next) => {
 // @access    Private
 exports.getArtist = asyncHandler(async (req, res, next) => {
 
-  const { rows: [artist] } = await knex.raw(
-    `
-      select 
-        ar.id,
-        ar.name,
-        ar.created_at,
-        coalesce(jsonb_agg(
-          jsonb_build_object(
-            'id', a.id, 
-            'title', a.title, 
-            'release_year', a.release_year, 
-            'genre', a.genre 
-          )
-        ) filter(where a.id is not null), '[]') as albums
-      from artists ar
-      left join albums_artists aa on ar.id = aa.artist_id
-      left join albums a on aa.album_id = a.id
-      where ar.id = ?
-      group by ar.id, ar.name, ar.created_at;
-    `
-    , [req.params.id]);
-
+  const { rows: [artist] } = await knex.raw(`select * from artists where ar.id = ?` , [req.params.id]);
   if (!artist) {
     return next(new ErrorResponse(`No Artist with the id of ${req.params.id}`, 404));
   }
