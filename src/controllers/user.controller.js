@@ -10,7 +10,7 @@ const { createUserSchema, updateUserSchema } = require("../validation/user.valid
 // @access    Private
 exports.getUsers = asyncHandler(async (req, res, next) => {
 
-  const { rows: users } = await knex.raw('SELECT * FROM users');
+  const { rows: users } = await knex.raw('select * from users');
 
   return res.status(200).json({
     success: true,
@@ -25,7 +25,7 @@ exports.getUsers = asyncHandler(async (req, res, next) => {
 // @access    Private
 exports.getUser = asyncHandler(async (req, res, next) => {
 
-  const { rows: [user] } = await knex.raw('SELECT * FROM users WHERE id = ?', [req.params.id]);
+  const { rows: [user] } = await knex.raw('select * from users where id = ?', [req.params.id]);
   if (!user) {
     return next(new ErrorResponse(`No User with the id of ${req.params.id}`, 404));
   }
@@ -45,7 +45,7 @@ exports.addUser = asyncHandler(async (req, res, next) => {
   const reqBody = await createUserSchema(req.body);
   const { name, username, password, created_at } = reqBody;
 
-  const { rows: [existUser] } = await knex.raw('SELECT * FROM users WHERE username = ?', [username]);
+  const { rows: [existUser] } = await knex.raw('select * from users where username = ?', [username]);
   if (existUser) {
     return next(new ErrorResponse(`Username already exists`, 400));
   };
@@ -54,7 +54,7 @@ exports.addUser = asyncHandler(async (req, res, next) => {
   const hashPassword = await bcrypt.hash(password, salt);
 
   const { rows: [user] } = await knex.raw(
-    `INSERT INTO users (name, username, password, created_at) VALUES (?, ?, ?, ?) RETURNING *`,
+    `insert into users (name, username, password, created_at) values (?, ?, ?, ?) returning *`,
     [name, username, hashPassword, created_at]
   );
 
@@ -70,7 +70,7 @@ exports.addUser = asyncHandler(async (req, res, next) => {
 // @access    Private
 exports.updateUser = asyncHandler(async (req, res, next) => {
 
-  const { rows: [user] } = await knex.raw('SELECT * FROM users WHERE id = ?', [req.params.id]);
+  const { rows: [user] } = await knex.raw('select * from users where id = ?', [req.params.id]);
   if (!user) {
     return next(new ErrorResponse(`No User with the id of ${req.params.id}`, 404));
   }
@@ -79,7 +79,7 @@ exports.updateUser = asyncHandler(async (req, res, next) => {
 
   if (reqBody.username) {
     const { rows: [existUser] } = await knex.raw(
-      'SELECT * FROM users WHERE username = ? AND id != ?',
+      'select * from users where username = ? AND id != ?',
       [reqBody.username, req.params.id]
     );
 
@@ -91,15 +91,14 @@ exports.updateUser = asyncHandler(async (req, res, next) => {
   const updateValue = {};
   if (reqBody.name) updateValue.name = reqBody.name;
   if (reqBody.username) updateValue.username = reqBody.username;
-  if (reqBody.updated_at) updateValue.updated_at = reqBody.updated_at;
 
-  const updateColumns = Object
+  const columns = Object
     .keys(updateValue)
     .map(column => `${column} = :${column}`)
     .join(', ');
 
   const { rows: [newUser] } = await knex.raw(
-    `UPDATE users SET ${updateColumns} WHERE id = :id RETURNING *`,
+    `update users SET ${columns} where id = :id returning *`,
     { ...updateValue, id: req.params.id }
   );
 
@@ -111,16 +110,16 @@ exports.updateUser = asyncHandler(async (req, res, next) => {
 });
 
 // @desc      Delete User
-// @route     DELETE /api/users/:id
+// @route     delete /api/users/:id
 // @access    Private
 exports.deleteUser = asyncHandler(async (req, res, next) => {
 
-  const { rows: [user] } = await knex.raw('SELECT * FROM users WHERE id = ?', [req.params.id]);
+  const { rows: [user] } = await knex.raw('select * from users where id = ?', [req.params.id]);
   if (!user) {
     return next(new ErrorResponse(`No user with the id of ${req.params.id}`, 404));
   }
 
-  await knex.raw('DELETE FROM users WHERE id = ?', [req.params.id]);
+  await knex.raw('delete from users where id = ?', [req.params.id]);
 
   res.status(200).json({
     success: true,

@@ -17,7 +17,7 @@ exports.register = asyncHandler(async (req, res, next) => {
   const { name, username, password, created_at } = reqBody;
 
   // Check for user
-  const { rows: [existUser] } = await knex.raw('SELECT * FROM users WHERE username = ?', [username]);
+  const { rows: [existUser] } = await knex.raw('select * from users where username = ?', [username]);
   if (existUser) {
     return next(new ErrorResponse(`Username already exists`, 400));
   };
@@ -27,7 +27,7 @@ exports.register = asyncHandler(async (req, res, next) => {
   const hashPassword = await bcrypt.hash(password, salt);
 
   const { rows: [user] } = await knex.raw(
-    `INSERT INTO users (name, username, password, created_at) VALUES (?, ?, ?, ?) RETURNING *`,
+    `insert into users (name, username, password, created_at) values (?, ?, ?, ?) returning *`,
     [name, username, hashPassword, created_at]
   );
 
@@ -44,7 +44,7 @@ exports.login = asyncHandler(async (req, res, next) => {
   const { username, password } = reqBody;
 
   // Check for user
-  const { rows: [user] } = await knex.raw('SELECT * FROM users WHERE username = ?', [username]);
+  const { rows: [user] } = await knex.raw('select * from users where username = ?', [username]);
   if (!user) {
     return next(new ErrorResponse('Invalid credentials', 401));
   };
@@ -60,7 +60,7 @@ exports.login = asyncHandler(async (req, res, next) => {
 });
 
 // @desc      Logout user 
-// @route     DELETE /api/auth/logout
+// @route     delete /api/auth/logout
 // @access    Private
 exports.logout = asyncHandler(async (req, res, next) => {
 

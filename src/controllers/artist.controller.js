@@ -9,7 +9,26 @@ const { createArtistSchema, updateArtistSchema } = require("../validation/artist
 // @access    Private
 exports.getArtists = asyncHandler(async (req, res, next) => {
 
-  const { rows: artists } = await knex.raw('SELECT * FROM artists');
+  const { rows: artists } = await knex.raw(
+    `
+      select 
+        ar.id,
+        ar.name,
+        ar.created_at,
+        coalesce(jsonb_agg(
+          jsonb_build_object(
+            'id', a.id, 
+            'title', a.title, 
+            'release_year', a.release_year, 
+            'genre', a.genre 
+          )
+        ) filter(where a.id is not null), '[]') as albums
+      from artists ar
+      left join albums_artists aa on ar.id = aa.artist_id
+      left join albums a on aa.album_id = a.id
+      group by ar.id, ar.name, ar.created_at;
+    `
+  );
 
   return res.status(200).json({
     success: true,
@@ -24,7 +43,28 @@ exports.getArtists = asyncHandler(async (req, res, next) => {
 // @access    Private
 exports.getArtist = asyncHandler(async (req, res, next) => {
 
-  const { rows: [artist] } = await knex.raw('SELECT * FROM artists WHERE id = ?', [req.params.id]);
+  const { rows: [artist] } = await knex.raw(
+    `
+      select 
+        ar.id,
+        ar.name,
+        ar.created_at,
+        coalesce(jsonb_agg(
+          jsonb_build_object(
+            'id', a.id, 
+            'title', a.title, 
+            'release_year', a.release_year, 
+            'genre', a.genre 
+          )
+        ) filter(where a.id is not null), '[]') as albums
+      from artists ar
+      left join albums_artists aa on ar.id = aa.artist_id
+      left join albums a on aa.album_id = a.id
+      where ar.id = ?
+      group by ar.id, ar.name, ar.created_at;
+    `
+    , [req.params.id]);
+
   if (!artist) {
     return next(new ErrorResponse(`No Artist with the id of ${req.params.id}`, 404));
   }
@@ -45,7 +85,7 @@ exports.addArtist = asyncHandler(async (req, res, next) => {
   const { name, created_at } = reqBody;
 
   const { rows: [artist] } = await knex.raw(
-    `INSERT INTO artists (name, created_at) VALUES (?, ?) RETURNING *`,
+    `insert into artists (name, created_at) values (?, ?) returning *`,
     [name, created_at]
   );
 
@@ -61,7 +101,7 @@ exports.addArtist = asyncHandler(async (req, res, next) => {
 // @access    Private
 exports.updateArtist = asyncHandler(async (req, res, next) => {
 
-  const { rows: [artist] } = await knex.raw('SELECT * FROM artists WHERE id = ?', [req.params.id]);
+  const { rows: [artist] } = await knex.raw('select * from artists where id = ?', [req.params.id]);
   if (!artist) {
     return next(new ErrorResponse(`No Artist with the id of ${req.params.id}`, 404));
   }
@@ -70,15 +110,14 @@ exports.updateArtist = asyncHandler(async (req, res, next) => {
 
   const updateValue = {};
   if (reqBody.name) updateValue.name = reqBody.name;
-  if (reqBody.updated_at) updateValue.updated_at = reqBody.updated_at;
 
-  const updateColumns = Object
+  const columns = Object
     .keys(updateValue)
     .map(column => `${column} = :${column}`)
     .join(', ');
 
   const { rows: [newArtist] } = await knex.raw(
-    `UPDATE artists SET ${updateColumns} WHERE id = :id RETURNING *`,
+    `update artists SET ${columns} where id = :id returning *`,
     { ...updateValue, id: req.params.id }
   );
 
@@ -90,16 +129,16 @@ exports.updateArtist = asyncHandler(async (req, res, next) => {
 });
 
 // @desc      Delete Artist
-// @route     DELETE /api/artists/:id
+// @route     delete /api/artists/:id
 // @access    Private
 exports.deleteArtist = asyncHandler(async (req, res, next) => {
 
-  const { rows: [artist] } = await knex.raw('SELECT * FROM artists WHERE id = ?', [req.params.id]);
+  const { rows: [artist] } = await knex.raw('select * from artists where id = ?', [req.params.id]);
   if (!artist) {
     return next(new ErrorResponse(`No artist with the id of ${req.params.id}`, 404));
   }
 
-  await knex.raw('DELETE FROM artists WHERE id = ?', [req.params.id]);
+  await knex.raw('delete from artists where id = ?', [req.params.id]);
 
   res.status(200).json({
     success: true,

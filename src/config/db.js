@@ -21,7 +21,7 @@ const knex = Knex({
 
 const connectPostgreSQL = async () => {
   try {
-    await knex.raw('SELECT 1');  // To test the connection
+    await knex.raw('select 1');  // To test the connection
     console.log(`PostgreSQL Database connected...`.yellow.bold);
   } catch (err) {
     console.log(`ERROR: ${err}`.red.bold);

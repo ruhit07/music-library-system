@@ -28,7 +28,7 @@ exports.protect = asyncHandler(async (req, res, next) => {
 
     // console.log(decoded, "decoded");
     const { rows: [user] } = await knex.raw(
-      'SELECT * FROM users WHERE id = ?',
+      'select * from users where id = ?',
       [decoded.id]
     );
 

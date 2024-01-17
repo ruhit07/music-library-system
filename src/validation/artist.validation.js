@@ -24,7 +24,6 @@ const updateArtistSchema = (reqBody) => {
 
   const dataSchema = {
     name: Joi.string(),
-    updated_at: Joi.date().default(moment()),
   };
 
   return new Promise((resolve, reject) => {

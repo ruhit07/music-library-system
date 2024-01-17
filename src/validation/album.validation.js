@@ -3,13 +3,14 @@ const Joi = require('joi');
 const moment = require('moment');
 const ErrorResponse = require('../utils/error-response.utils');
 
-const createUserSchema = (reqBody) => {
+const createAlbumSchema = (reqBody) => {
   const data = reqBody;
 
   let dataSchema = {
-    name: Joi.string().required(),
-    username: Joi.string().required(),
-    password: Joi.string().min(6).required(),
+    title: Joi.string().required(),
+    release_year: Joi.number().integer().min(1000).max(9999).required(),
+    genre: Joi.string().required(),
+    artist_ids: Joi.array().items(Joi.number().integer()).required(),
     created_at: Joi.date().default(moment()),
   };
 
@@ -21,12 +22,14 @@ const createUserSchema = (reqBody) => {
 };
 
 
-const updateUserSchema = (reqBody) => {
+const updateAlbumSchema = (reqBody) => {
   const data = reqBody;
 
   const dataSchema = {
-    name: Joi.string(),
-    username: Joi.string(),
+    title: Joi.string(),
+    release_year: Joi.number().integer().min(1000).max(9999),
+    genre: Joi.string(),
+    artist_ids: Joi.array().items(Joi.number().integer()),
   };
 
   return new Promise((resolve, reject) => {
@@ -38,6 +41,6 @@ const updateUserSchema = (reqBody) => {
 
 
 module.exports = {
-  createUserSchema,
-  updateUserSchema
+  createAlbumSchema,
+  updateAlbumSchema
 }

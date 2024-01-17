@@ -8,7 +8,6 @@
 - [x] albums_artists
 - [x] songs
 
-
 ## users
 
 ```sql
@@ -20,8 +19,7 @@ CREATE TABLE users(
   password                VARCHAR(255) NOT NULL,
 
   created_at              TIMESTAMP WITH TIME ZONE,
-  updated_at              TIMESTAMP WITH TIME ZONE,
-
+  
   CONSTRAINT users_pkey PRIMARY KEY (id));
 
 ```
@@ -33,11 +31,10 @@ CREATE TABLE users(
 CREATE TABLE albums(
   id                      SERIAL NOT NULL,
   title                   VARCHAR(255) NOT NULL,
-  release_year            DATE NOT NULL,
+  release_year            INTEGER NOT NULL,
   genre                   VARCHAR(255) NOT NULL,
 
   created_at              TIMESTAMP WITH TIME ZONE,
-  updated_at              TIMESTAMP WITH TIME ZONE,
 
   CONSTRAINT albums_pkey PRIMARY KEY (id));
   
@@ -52,8 +49,7 @@ CREATE TABLE artists(
   name                    VARCHAR(255) NOT NULL,
 
   created_at              TIMESTAMP WITH TIME ZONE,
-  updated_at              TIMESTAMP WITH TIME ZONE,
-
+  
   CONSTRAINT artists_pkey PRIMARY KEY (id));
   
 ```
@@ -68,8 +64,7 @@ CREATE TABLE albums_artists(
   album_id                INTEGER NOT NULL,
 
   created_at              TIMESTAMP WITH TIME ZONE,
-  updated_at              TIMESTAMP WITH TIME ZONE,
-
+  
   CONSTRAINT albums_artists_pkey PRIMARY KEY (id));
   
 ```
@@ -85,7 +80,6 @@ CREATE TABLE songs(
   album_id                INTEGER NOT NULL,
   
   created_at              TIMESTAMP WITH TIME ZONE,
-  updated_at              TIMESTAMP WITH TIME ZONE,
 
   CONSTRAINT songs_pkey PRIMARY KEY (id));
   
