@@ -35,7 +35,7 @@ process.on('uncaughtException', unexpectedErrorHandler);
 process.on('unhandledRejection', unexpectedErrorHandler);
 
 process.on('SIGTERM', () => {
-  winston.error(`SIGTERM received`.red);
+  console.log(`SIGTERM received`.red);
 
   if (server) {
     server.close();
