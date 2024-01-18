@@ -20,9 +20,9 @@ npm install
 Set the environment variables:
 
 ```bash
-cp .env.example .env.development
+cp .env.example .env
 
-# open .env.development and modify the environment variables (if needed)
+# open .env and modify the environment variables (if needed)
 ```
 
 ## Features
@@ -48,7 +48,7 @@ npm run dev
 
 ## Environment Variables
 
-The environment variables can be found and modified in the `.env.development` file. They come with these default values:
+The environment variables can be found and modified in the `.env` file. They come with these default values:
 
 ```bash
 NODE_ENV=example
