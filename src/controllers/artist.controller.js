@@ -24,7 +24,7 @@ exports.getArtists = asyncHandler(async (req, res, next) => {
 // @access    Private
 exports.getArtist = asyncHandler(async (req, res, next) => {
 
-  const { rows: [artist] } = await knex.raw(`select * from artists where ar.id = ?` , [req.params.id]);
+  const { rows: [artist] } = await knex.raw(`select * from artists where id = ?` , [req.params.id]);
   if (!artist) {
     return next(new ErrorResponse(`No Artist with the id of ${req.params.id}`, 404));
   }
